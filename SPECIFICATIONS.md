@@ -740,96 +740,57 @@ The primary use case — accessing a protocol during an emergency — must never
 
 ---
 
-## 16. Open Questions & Decisions
+## 16. Decisions Log
 
-These items require discussion and decisions before implementation can proceed on the affected features.
+All architectural and technology decisions have been resolved. Documented here for reference.
 
-### DECISION-001: Content Architecture Model
+### DECISION-001: Content Architecture Model — RESOLVED
 
 **Affects:** Specs 4.1, 4.4, 4.5, 7.1
-**Status:** Needs Discussion
-**Options:** Structured Data / PDF+Metadata Hybrid / PDF-First
-**Recommendation:** Structured Data with phased migration (see Section 5)
-**Discussion Points:**
-- What is the acceptable timeline for migrating existing Lucid Chart PDFs to structured format?
-- Can Lucid Chart export data in a structured format (JSON, XML) that could accelerate migration?
-- Is there appetite for running both systems in parallel during transition?
-- Who will be responsible for migrating existing content?
+**Decision:** **Structured Data** with phased migration
+**Rationale:** Structured data is the foundation for cross-linking, bulk editing, quiz generation, and the native guideline editor. Launch with PDF upload support for backward compatibility; build the structured editor in parallel. Phase out PDFs as structured content matures.
 
-### DECISION-002: Authentication Approach
+### DECISION-002: Authentication Approach — RESOLVED
 
 **Affects:** Specs 6.1, 6.2, 6.3
-**Status:** Needs Decision
-**Options:** SSO / Custom Auth / Hybrid
-**Discussion Points:**
-- Does NMHAS currently use Azure AD, Okta, or another identity provider?
-- What identity systems do partner agencies (police, fire) use?
-- Is IT available to support SSO integration, or is a self-contained system preferred?
-- What are the password/security policies that must be enforced?
+**Decision:** **Custom auth first**, SSO-ready architecture
+**Rationale:** Custom authentication (email/password + biometric) for all users at launch. Architecture designed to add SSO (Azure AD, Okta) for internal NMHAS staff as a future enhancement. Custom auth ensures partner agencies (police, fire) can onboard regardless of their IT infrastructure.
 
-### DECISION-003: Pediatric Dosing Data Source
+### DECISION-003: Pediatric Dosing Data Source — RESOLVED
 
 **Affects:** Spec 4.3
-**Status:** Needs Decision
-**Options:** License Handtevy / Build from own protocols / Other
-**Discussion Points:**
-- Is Handtevy-equivalent accuracy required, or is this a simplified dosing reference?
-- Who validates dosing data for clinical accuracy?
-- How frequently do pediatric dosing guidelines change?
-- Are there regulatory requirements for dosing calculator certification?
+**Decision:** **Build from own protocols**
+**Rationale:** With Structured Data architecture (DECISION-001), medications and dosages live in the structured content model. The dosing calculator pulls directly from NMHAS protocols — single source of truth, always current. Medical Director validates dosing data as part of the protocol approval workflow.
 
-### DECISION-004: Cross-Platform Framework
+### DECISION-004: Cross-Platform Framework — RESOLVED
 
 **Affects:** All platform targets
-**Status:** Needs Decision
-**Options:** Flutter / React Native / .NET MAUI / Kotlin Multiplatform / Other
-**Discussion Points:**
-- Does the team have existing expertise in any of these frameworks?
-- Are there organizational technology standards that constrain this choice?
-- Performance requirements for offline-first architecture may favor certain frameworks
+**Decision:** **Flutter** (Dart)
+**Rationale:** Best offline-first tooling (Hive, Drift), superior PDF rendering (Syncfusion), cohesive theming system for dark mode, unified desktop support (same rendering engine on all platforms), and AOT-compiled performance with no bridge overhead. Dart is straightforward to learn for developers with Java/JS/C# experience.
 
-### DECISION-005: AI Provider for Quiz Generation
+### DECISION-005: AI Provider for Quiz Generation — RESOLVED
 
 **Affects:** Spec 7.1
-**Status:** Needs Decision
-**Options:** Claude API / OpenAI / On-device model / Custom ML
-**Discussion Points:**
-- Can clinical content be sent to a third-party AI API, or must generation happen on-premise?
-- What review process is required before AI-generated questions are served to users?
-- Should AI-generated questions be pre-generated and cached, or generated on-demand?
-- Budget considerations for API usage at scale
+**Decision:** **Claude API** (Anthropic)
+**Rationale:** Strong structured reasoning for clinical scenarios and protocol-based question generation. Questions pre-generated server-side and cached for offline use. All AI-generated questions go through human review (Medical Director or designee) before being served to users.
 
-### DECISION-006: Hosting & Infrastructure
+### DECISION-006: Hosting & Infrastructure — RESOLVED
 
 **Affects:** Spec 12
-**Status:** Needs Decision
-**Options:** Cloud (AWS/Azure/GCP) / On-premise / Hybrid
-**Discussion Points:**
-- Existing infrastructure and cloud provider relationships
-- HIPAA compliance requirements
-- IT team capacity for infrastructure management
-- Budget for cloud services vs. capital expenditure for on-premise
+**Decision:** **Firebase / Google Cloud Platform (GCP)**
+**Rationale:** Firebase pairs naturally with Flutter (same Google ecosystem). Firestore for real-time data sync with offline persistence, Firebase Auth for custom authentication, Cloud Functions for server-side logic (quiz generation, notifications), and Firebase Cloud Messaging (FCM) for push notifications. Managed infrastructure with 99.95% SLA.
 
-### DECISION-007: Web Application
+### DECISION-007: Web Application — RESOLVED
 
 **Affects:** Platform targets
-**Status:** Needs Decision
-**Discussion Points:**
-- Is a web version needed, or are native apps sufficient?
-- Web version could serve as the admin portal platform
-- Progressive Web App (PWA) could provide a lightweight option for partner agencies
+**Decision:** **Yes** — Admin portal (authenticated) + public protocol viewer (no login, shareable links)
+**Rationale:** Admin portal as web app gives admins browser-based access for guideline management, analytics, and user management without requiring a native app install. Public protocol viewer allows shareable links to specific protocols for reference and training without requiring authentication — accessible to partner agencies and external stakeholders.
 
-### DECISION-008: Gotham Font Licensing
+### DECISION-008: Gotham Font Licensing — RESOLVED
 
 **Affects:** Spec 13.2 (Typography), all UI development
-**Status:** Needs Decision
-**Options:** License Gotham for mobile embedding / Use Arial fallback / Explore open-source alternatives (e.g., Montserrat)
-**Discussion Points:**
-- Gotham is a commercial typeface by Hoefler & Co. — mobile app embedding typically requires a separate license tier
-- Licensing cost varies by user count and platforms (estimate: $500-2,000+)
-- North Memorial Health brand standards approve Arial as the digital fallback
-- Open-source alternatives like Montserrat have a similar geometric sans-serif feel but are not brand-approved
-- This is a blocking decision for UI development — font choice affects all screen layouts and spacing
+**Decision:** **Open-source alternative** (Montserrat)
+**Rationale:** Montserrat is a geometric sans-serif that closely matches Gotham's visual character. Available via Google Fonts, free for all use including mobile app embedding. Avoids commercial licensing cost and procurement delays. Can be swapped for licensed Gotham later if desired with minimal layout impact.
 
 ---
 
