@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616371063592",
+    "project_id": "nmhas-guideline-platform",
+    "storage_bucket": "nmhas-guideline-platform.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616371063592:android:0b9a611ac288a412679e1d",
+        "android_client_info": {
+          "package_name": "com.nmhas.nmhas_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiwjGVJVKM3SZIg_aMSsdz3n_exJR2U_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
