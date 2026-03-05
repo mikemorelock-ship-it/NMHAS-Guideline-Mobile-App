@@ -533,27 +533,122 @@ Given the operational environment (ambulances, remote areas, in-flight), the app
 
 ## 13. Branding & UI Design
 
-> **Status: AWAITING NORTH MEMORIAL IDENTITY STANDARDS DOCUMENT**
->
-> The UI design will align with North Memorial Health brand standards. The identity standards document is needed to define:
-> - Primary and secondary color palette
-> - Typography (font families, sizes, weights)
-> - Logo usage rules and safe zones
-> - Iconography style
-> - Photography and imagery guidelines
-> - Tone of voice for UI copy
->
-> **Action Required:** Upload or provide the North Memorial Identity Standards document.
+> **Status: DEFINED** — Based on North Memorial Health Identity Standards v9.7 (October 2025)
 
-### General UI Principles (Pre-Brand)
+### 13.1 Color System
+
+#### Primary Palette
+
+| Name | PMS | Hex | RGB | Usage |
+|------|-----|-----|-----|-------|
+| Teal | 3262 | `#00b0ad` | 0/176/173 | Primary brand, interactive elements, links, large text headings |
+| Orange/Red | 1665 | `#e04726` | 224/71/38 | Alerts, critical actions, emphasis, urgent indicators |
+| Gray | 7540 | `#4b4f54` | 75/79/84 | Body text, secondary UI elements |
+| Gold | 1235 | `#fcb526` | 255/184/38 | Highlights, badges, achievements, warnings |
+
+Each primary color has approved tints at 75%, 50%, and 25%/35% opacity for use in backgrounds, dividers, and subtle accents.
+
+#### Secondary Palette
+
+Secondary colors must always be paired with their corresponding primary — never used alone.
+
+| Name | PMS | Hex | Pairs With | Usage |
+|------|-----|-----|-----------|-------|
+| Dark Teal | 548C | `#00383d` | Teal | Dark mode backgrounds, headers, depth |
+| Dark Red | 490C | `#60151E` | Orange/Red | Critical alerts in dark mode, error states |
+| Dark Brown | 1535C | `#762d10` | Orange/Red | Accent in dark/warm contexts |
+| Light Gray | Cool Gray 3C | `#D6D6D6` | Gray | Backgrounds, dividers, disabled states |
+
+Secondary colors must not overpower primary colors — limited to less than 50% of any screen or component.
+
+#### Functional Color Mapping
+
+| Function | Light Mode | Dark Mode | Notes |
+|----------|-----------|-----------|-------|
+| Background | `#FFFFFF` | `#00383d` (Dark Teal) | Brand-aligned dark mode background |
+| Surface | `#F5F5F5` | `#0A4A4D` | Slightly lighter than dark background |
+| Text Primary | `#4b4f54` (Gray) | `#FFFFFF` | Gray passes AA on white at 5.9:1 |
+| Text Secondary | `#6B7280` | `#D6D6D6` (Light Gray) | |
+| Success | `#00b0ad` (Teal) | `#00b0ad` | Consistent across modes |
+| Warning | `#fcb526` (Gold) | `#fcb526` | Consistent across modes |
+| Error/Critical | `#e04726` (Orange/Red) | `#e04726` | Consistent across modes |
+
+### 13.2 Typography
+
+| Role | Font | Fallback | Weight | Usage |
+|------|------|----------|--------|-------|
+| Display / H1 | Gotham Bold | Arial Bold | 700 | Screen titles, hero elements |
+| Heading / H2-H3 | Gotham Medium | Arial Bold | 500 | Section headers, card titles |
+| Body | Gotham Book | Arial | 400 | Protocol text, descriptions |
+| Caption / Meta | Gotham Light | Arial | 300 | Timestamps, secondary labels |
+
+> **Font licensing note:** Gotham is a commercial typeface (Hoefler & Co.). Licensing for mobile app embedding must be confirmed before development begins. If licensing is not feasible, Arial is the approved digital fallback per brand standards. See [DECISION-008](#decision-008-gotham-font-licensing).
+
+### 13.3 Logo Usage
+
+- **Mark:** Capital "N" masterbrand with "North Memorial Health" wordmark
+- **Variants available:** Full color, reversed/white (with colored N or solid white), grayscale, black
+- **Clear space:** 2x the width of the rectangles in the "N" mark on all sides
+- **Minimum sizes (digital):** Full logo: 168px wide; N mark alone: 24px wide
+- **Placement:** Top-left of app header or centered on splash/login screens
+- **Restrictions:** Do not alter colors, stretch, rotate, add effects, or place on busy backgrounds without sufficient contrast
+- **N mark alone:** May only be used when the full logo appears elsewhere on the same screen (e.g., splash screen → header)
+- **Sub-brand logos** (Ambulance, Air Care, etc.) follow locked placement rules — contact Marketing for files
+
+### 13.4 Brand Voice in UI
+
+- **Personality:** Thoughtful, Passionate, Friendly
+- **Tone:** Fresh, modern, clean
+- **Informal reference:** "You can call us North" — use "North" in conversational UI (nudge messages, encouragement); use "North Memorial Health" in legal, login, and official contexts
+- **Application:** Active, direct language; warmth and empathy in all user-facing copy; aligns with nudge messaging guidelines in Section 14.5
+
+### 13.5 Accessibility & Contrast
+
+**Standard:** WCAG 2.1 AA minimum (per brand identity standards and app requirements)
+
+| Combination | Contrast Ratio | AA Status | Usable For |
+|-------------|---------------|-----------|------------|
+| Gray `#4b4f54` on White | 5.9:1 | **PASS** | Body text, all text sizes |
+| Orange/Red `#e04726` on White | 3.9:1 | Large text only | Headings 18px+, icons, UI elements |
+| Teal `#00b0ad` on White | 3.0:1 | **FAIL** for body text | Large text 18px+, icons, interactive elements only |
+| Gold `#fcb526` on White | 1.8:1 | **FAIL** | Backgrounds/fills only — never as text on white |
+| White on Dark Teal `#00383d` | High | **PASS** | Dark mode text |
+| Gold `#fcb526` on Dark Teal | High | **PASS** | Dark mode badges, highlights |
+
+> **Key constraint:** Body text must use Gray (`#4b4f54`), not Teal or Gold. Teal may be used for headings 18px+ and interactive elements (buttons, links) where the touch target provides sufficient visual weight.
+
+### 13.6 Dark Mode Strategy
+
+Dark mode is essential for night operations (ambulance, in-flight). The brand's secondary palette provides dark mode foundations:
+
+- **Background:** Dark Teal `#00383d` — brand-aligned, avoids generic pure black
+- **Surface:** `#0A4A4D` — lighter variant for cards, modals
+- **Text:** White primary, Light Gray `#D6D6D6` secondary
+- **Accent:** Teal `#00b0ad` remains usable on dark backgrounds with good contrast
+- **Alerts:** Orange/Red `#e04726` and Gold `#fcb526` maintain visibility on dark backgrounds
+- **Critical states:** Dark Red `#60151E` for severe error backgrounds in dark mode
+
+### 13.7 State-Aware Theming
+
+Each jurisdiction gets a subtle accent color to differentiate active protocol scope:
+
+| Jurisdiction | Accent Color | Rationale |
+|-------------|-------------|-----------|
+| Minnesota | Teal `#00b0ad` | Primary brand color as default scope |
+| Wisconsin | Gold `#fcb526` | Visually distinct, warm |
+| Air Medical | Orange/Red `#e04726` | High energy, urgency-appropriate |
+
+Theming applies to: header accent bar, scope indicator badge, navigation highlight. Core UI (text, backgrounds, buttons) remains consistent across scopes to maintain usability and reduce cognitive load.
+
+### 13.8 General UI Principles
 
 - **High contrast** for readability in variable lighting (bright sunlight, dark ambulance)
 - **Large touch targets** for gloved hands or moving vehicles
-- **Dark mode** support (essential for night operations)
+- **Dark mode** support (essential for night operations — see Section 13.6)
 - **Minimal chrome** — maximize content area, minimize navigation overhead
 - **Consistent navigation** — primary functions accessible within 2 taps from any screen
-- **Accessible** — WCAG 2.1 AA compliance minimum; consider colorblind-safe palette
-- **State-aware theming** — subtle visual cue indicating which jurisdiction's protocols are active (MN vs. WI vs. Air Medical)
+- **Accessible** — WCAG 2.1 AA compliance minimum; colorblind-safe palette (see Section 13.5)
+- **State-aware theming** — subtle visual cue indicating which jurisdiction's protocols are active (see Section 13.7)
 
 ---
 
@@ -723,6 +818,18 @@ These items require discussion and decisions before implementation can proceed o
 - Is a web version needed, or are native apps sufficient?
 - Web version could serve as the admin portal platform
 - Progressive Web App (PWA) could provide a lightweight option for partner agencies
+
+### DECISION-008: Gotham Font Licensing
+
+**Affects:** Spec 13.2 (Typography), all UI development
+**Status:** Needs Decision
+**Options:** License Gotham for mobile embedding / Use Arial fallback / Explore open-source alternatives (e.g., Montserrat)
+**Discussion Points:**
+- Gotham is a commercial typeface by Hoefler & Co. — mobile app embedding typically requires a separate license tier
+- Licensing cost varies by user count and platforms (estimate: $500-2,000+)
+- North Memorial Health brand standards approve Arial as the digital fallback
+- Open-source alternatives like Montserrat have a similar geometric sans-serif feel but are not brand-approved
+- This is a blocking decision for UI development — font choice affects all screen layouts and spacing
 
 ---
 
