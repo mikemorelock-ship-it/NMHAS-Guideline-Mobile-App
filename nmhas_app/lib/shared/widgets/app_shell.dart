@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'connectivity_banner.dart';
+
 /// Bottom navigation shell wrapping all top-level routes.
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child});
@@ -17,7 +19,12 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
+      body: Column(
+        children: [
+          const ConnectivityBanner(),
+          Expanded(child: child),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex(context),
         onDestinationSelected: (index) {

@@ -9,6 +9,9 @@ import 'repositories/protocol_repository.dart';
 /// Currently selected scope (MN, WI, Air Medical).
 final selectedScopeProvider = StateProvider<String>((ref) => 'MN');
 
+/// Search query for filtering protocols client-side.
+final protocolSearchQueryProvider = StateProvider<String>((ref) => '');
+
 class ProtocolsScreen extends ConsumerWidget {
   const ProtocolsScreen({super.key});
 
@@ -22,6 +25,18 @@ class ProtocolsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Protocols'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: 'Search protocols',
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: _ProtocolSearchDelegate(ref: ref, scope: scope),
+              );
+            },
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: Padding(
@@ -142,6 +157,108 @@ class _ProtocolList extends StatelessWidget {
                 )),
             if (index < categories.length - 1) const Divider(),
           ],
+        );
+      },
+    );
+  }
+}
+
+/// Search delegate that filters protocols by title, category, and tags.
+class _ProtocolSearchDelegate extends SearchDelegate<String?> {
+  _ProtocolSearchDelegate({required this.ref, required this.scope});
+
+  final WidgetRef ref;
+  final String scope;
+
+  @override
+  String get searchFieldLabel => 'Search protocols...';
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      if (query.isNotEmpty)
+        IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => query = '',
+        ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () => close(context, null),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) => _buildSearchResults(context);
+
+  @override
+  Widget buildSuggestions(BuildContext context) => _buildSearchResults(context);
+
+  Widget _buildSearchResults(BuildContext context) {
+    if (query.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search, size: 64, color: AppColors.lightGray),
+            const SizedBox(height: 16),
+            Text(
+              'Search by title, category, or tag',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      );
+    }
+
+    final protocolsAsync = ref.watch(protocolsProvider(scope));
+
+    return protocolsAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, _) => const Center(child: Text('Unable to search')),
+      data: (protocols) {
+        final lowerQuery = query.toLowerCase();
+        final filtered = protocols.where((p) {
+          return p.title.toLowerCase().contains(lowerQuery) ||
+              p.category.toLowerCase().contains(lowerQuery) ||
+              p.tags.any((t) => t.toLowerCase().contains(lowerQuery));
+        }).toList();
+
+        if (filtered.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.search_off, size: 48, color: AppColors.lightGray),
+                const SizedBox(height: 16),
+                Text(
+                  'No protocols match "$query"',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: filtered.length,
+          itemBuilder: (context, index) {
+            final protocol = filtered[index];
+            return ListTile(
+              leading: const Icon(Icons.description_outlined),
+              title: Text(protocol.title),
+              subtitle: Text(protocol.category),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                close(context, null);
+                context.go('/protocols/${protocol.id}');
+              },
+            );
+          },
         );
       },
     );

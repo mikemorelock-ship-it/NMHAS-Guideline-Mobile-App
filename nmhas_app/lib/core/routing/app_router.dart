@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/auth_repository.dart';
+import '../../features/auth/forgot_password_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/protocols/protocols_screen.dart';
 import '../../features/protocols/protocol_detail_screen.dart';
@@ -18,8 +19,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isLoggedIn = authState.valueOrNull != null;
       final isOnLogin = state.uri.path == '/login';
+      final isOnForgotPassword = state.uri.path == '/forgot-password';
 
-      if (!isLoggedIn && !isOnLogin) return '/login';
+      if (!isLoggedIn && !isOnLogin && !isOnForgotPassword) return '/login';
       if (isLoggedIn && isOnLogin) return '/protocols';
       return null;
     },
@@ -27,6 +29,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) => AppShell(child: child),

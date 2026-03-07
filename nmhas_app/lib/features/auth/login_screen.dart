@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'auth_repository.dart';
 import '../../core/theme/app_colors.dart';
@@ -190,9 +191,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   // Forgot password
                   TextButton(
-                    onPressed: () {
-                      // TODO: navigate to forgot password screen
-                    },
+                    onPressed: () => context.go('/forgot-password'),
                     child: const Text('Forgot password?'),
                   ),
                 ],
