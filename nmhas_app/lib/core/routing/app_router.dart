@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/auth_repository.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/protocols/protocols_screen.dart';
+import '../../features/protocols/protocol_detail_screen.dart';
 import '../../features/contacts/contacts_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../shared/widgets/app_shell.dart';
@@ -33,6 +34,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/protocols',
             builder: (context, state) => const ProtocolsScreen(),
+            routes: [
+              GoRoute(
+                path: ':id',
+                builder: (context, state) => ProtocolDetailScreen(
+                  protocolId: state.pathParameters['id']!,
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: '/contacts',

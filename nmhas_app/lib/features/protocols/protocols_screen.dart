@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import 'models/protocol.dart';
@@ -136,7 +137,7 @@ class _ProtocolList extends StatelessWidget {
                       : null,
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    // TODO: navigate to protocol detail / PDF viewer
+                    context.go('/protocols/${protocol.id}');
                   },
                 )),
             if (index < categories.length - 1) const Divider(),
